@@ -16,7 +16,7 @@ class ArchetypeSocketConnectionHandler(threading.Thread):
         self._start_webserver()
 
     def _start_webserver(self):
-        self.http_server = start_threaded_http_server('localhost', 9000)
+        self.http_server = start_threaded_http_server('localhost', 9000, self)
         self.http_server.start()
 
     def _process_data(self, data):

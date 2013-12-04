@@ -10,8 +10,10 @@ class View(object):
 
     server = None
 
-    def __init__(self, server):
+    def __init__(self, server, request, path):
         self.server = server
+        self.request = request
+        self.path = path
 
     def render(self, request, data=None, *args, **kwargs):
         template_vars = {
@@ -19,16 +21,22 @@ class View(object):
         }
 
 
+class StaticView(View):
+    def render(self, *args, **kwargs):
+        print "\n"*10, self.path, "\n"*10
+
+
 class HomeView(View):
-    def render(self, request, data):
+    def render(self, data):
         template_vars= {
             'data': data,
         }
         self.server.send_to_socket('Vex')
-        return render(request, "home.html", template_vars)
+        return render(self.request, "home.html", template_vars)
 
 
 URLS = (
+    (r'^/static/(\w+.\w+)$', StaticView),
     (r'^/$', HomeView),
 )
 
@@ -66,13 +74,11 @@ class ArchetypeHTTPServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         for url in self._urls:
             regex, view = url
             if re.search(regex, self.path):
-                http_response = view(self.server).render(self.request, self._data)
+                http_response = view(self.server, self.request, self.path).render(self._data)
                 self._process_http_response(http_response)
                 break
         if not http_response:
             self._throw_404()
-
-
 
 
 class ArchetypeHTTPServer(BaseHTTPServer.HTTPServer, threading.Thread):
@@ -86,7 +92,7 @@ class ArchetypeHTTPServer(BaseHTTPServer.HTTPServer, threading.Thread):
     # Serve flag (use this to stop the server)
     serve = False
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, archetype_socket_connection):
         while True:
             try:
                 super(ArchetypeHTTPServer, self).__init__(
@@ -94,10 +100,11 @@ class ArchetypeHTTPServer(BaseHTTPServer.HTTPServer, threading.Thread):
                 break
             except _socket.error:
                 port += 1
+        threading.Thread.__init__(self)
         self.host = host
         self.port = port
         print 'running in port:', port
-        threading.Thread.__init__(self)
+        self.archetype_socket_connection = archetype_socket_connection
         self.serve = True
 
     def _get_server_url(self):
@@ -106,28 +113,24 @@ class ArchetypeHTTPServer(BaseHTTPServer.HTTPServer, threading.Thread):
     def _execute_fake_request(self):
         # Use this function to execute a fake request and for a loop.
         url = self._get_server_url()
-        print 'fake request to', url
         fake_request = urllib2.urlopen(url)
-        #fake_request.close()
+        fake_request.close()
 
     def serve_forever(self):
         while self.serve:
-            print "Serving"
             self.handle_request()
-        print 'end of serve forever'
 
     def shutdown(self):
         self.serve = False
-        print "shutting down"
         self._execute_fake_request()
 
     def send_to_socket(self, msg):
-        pass
+        self.archetype_socket_connection.send(msg)
 
     def run(self):
         self.serve_forever()
 
 
-def start_threaded_http_server(host, port):
-    httpd = ArchetypeHTTPServer(host, port)
+def start_threaded_http_server(host, port, archetype_socket_connection):
+    httpd = ArchetypeHTTPServer(host, port, archetype_socket_connection)
     return httpd
