@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for tab in data.tabs %}
+        <h2>{{ tab.name }}</h2>
+        <ul>
+            {% for split in tab.splits %}
+                <li>{{ split }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+{% endblock %}
