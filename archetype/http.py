@@ -21,3 +21,8 @@ def render(request, template_name, template_vars={}, code=200, content_type='tex
     rendered_template = template.render(template_vars)
     http_response = HttpReponse(code, content_type, rendered_template)
     return http_response
+
+
+def render_static(static_content, code=200, content_type='text/plain'):
+    http_response = HttpReponse(code, content_type, static_content)
+    return http_response

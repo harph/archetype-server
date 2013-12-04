@@ -3,42 +3,7 @@ import socket as _socket
 import urllib2
 import BaseHTTPServer
 import threading
-from http import render
-
-
-class View(object):
-
-    server = None
-
-    def __init__(self, server, request, path):
-        self.server = server
-        self.request = request
-        self.path = path
-
-    def render(self, request, data=None, *args, **kwargs):
-        template_vars = {
-            'data': data,
-        }
-
-
-class StaticView(View):
-    def render(self, *args, **kwargs):
-        print "\n"*10, self.path, "\n"*10
-
-
-class HomeView(View):
-    def render(self, data):
-        template_vars= {
-            'data': data,
-        }
-        self.server.send_to_socket('Vex')
-        return render(self.request, "home.html", template_vars)
-
-
-URLS = (
-    (r'^/static/(\w+.\w+)$', StaticView),
-    (r'^/$', HomeView),
-)
+from urls import URLS
 
 
 class ArchetypeHTTPServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -73,12 +38,21 @@ class ArchetypeHTTPServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         http_response = None
         for url in self._urls:
             regex, view = url
-            if re.search(regex, self.path):
-                http_response = view(self.server, self.request, self.path).render(self._data)
-                self._process_http_response(http_response)
+            regex_search = re.search(regex, self.path)
+            if regex_search:
+                http_view = view(
+                    self.server, self.request, self.path, self._data)
+                regex_groups = regex_search.groupdict()
+                if regex_groups:
+                    http_response = http_view.render(**regex_groups)
+                else:
+                    http_response = http_view.render()
                 break
-        if not http_response:
-            self._throw_404()
+        if http_response:
+            self._process_http_response(http_response)
+            return
+        self._throw_404()
+
 
 
 class ArchetypeHTTPServer(BaseHTTPServer.HTTPServer, threading.Thread):
