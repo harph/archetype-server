@@ -2,11 +2,32 @@
 <html>
     <head>
         <title>Archetype - {{ data.base_path }}</title>
+        {% block css %}
+            <!-- Bootstrap -->
+            <link rel="stylesheet" type="text/css" media="screen" href="/static/lib/bootstrap-3.0.3/css/bootstrap.min.css">
+            <link rel="stylesheet" type="text/css" media="screen" href="/static/lib/bootstrap-3.0.3/css/bootstrap-theme.min.css">
+            <link rel="stylesheet" type="text/css" media="screen" href="/static/lib/bootstrap-3.0.3/css/bootstrap.min.css">
+            <link rel="stylesheet" type="text/css" media="screen" href="/static/css/master.css">
+        {% endblock css %}
+
+        {% block js %}
+            <script type="text/javascript" src="/static/lib/bootstrap-3.0.3/js/bootstrap.min.js"></script>
+        {% endblock js %}
+
+        {% block additional_css %}
+            <!-- css -->
+        {% endblock additional_css %}
+
+        {% block additional_js %}
+            <!-- js -->
+        {% endblock additional_js %}
     </head>
     <body>
-        <div>
-            {% block content %}
-            {% endblock %}
-        </div>
+        {% block container %}
+            <div class="container">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        {% endblock container%}
     </body>
 </html>

@@ -12,9 +12,6 @@ class ArchetypeHTTPServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     _listener = None
     _urls = URLS
 
-    def set_data(self, data):
-        self._data = data
-
     def _throw_reponse_error(self, error_code, msg):
         self.send_response(error_code)
         self.send_header('Content-type', 'text/html')
@@ -41,7 +38,11 @@ class ArchetypeHTTPServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             regex_search = re.search(regex, self.path)
             if regex_search:
                 http_view = view(
-                    self.server, self.request, self.path, self._data)
+                    self.server,
+                    self.request,
+                    self.path,
+                    self.server.editor_data
+                )
                 regex_groups = regex_search.groupdict()
                 if regex_groups:
                     http_response = http_view.render(**regex_groups)
@@ -65,6 +66,9 @@ class ArchetypeHTTPServer(BaseHTTPServer.HTTPServer, threading.Thread):
 
     # Serve flag (use this to stop the server)
     serve = False
+
+    # Editor data
+    editor_data = None
 
     def __init__(self, host, port, archetype_socket_connection):
         while True:
@@ -100,6 +104,9 @@ class ArchetypeHTTPServer(BaseHTTPServer.HTTPServer, threading.Thread):
 
     def send_to_socket(self, msg):
         self.archetype_socket_connection.send(msg)
+
+    def update_data(self, data):
+        self.editor_data = data
 
     def run(self):
         self.serve_forever()

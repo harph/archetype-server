@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for tab in data.tabs %}
-        <h2>{{ tab.name }}</h2>
-        <ul>
-            {% for split in tab.splits %}
-                <li>{{ split }}</li>
+    <div class="row">
+        <div class="col-md-12">
+            {% for tab in data.tabs %}
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>{{ tab.name }}</th>
+                    </tr>
+                    {% for split in tab.splits %}
+                        <tr>
+                            <td>{{ split }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
             {% endfor %}
-        </ul>
-    {% endfor %}
+        </div>
+    </div>
 {% endblock %}

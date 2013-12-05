@@ -1,3 +1,4 @@
+import json
 import socket as _socket
 import asyncore
 import threading
@@ -20,7 +21,8 @@ class ArchetypeSocketConnectionHandler(threading.Thread):
         self.http_server.start()
 
     def _process_data(self, data):
-        pass
+        json_data = json.loads(data)
+        self.http_server.update_data(json_data)
 
     def send(self, msg):
         if self._closed:
