@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-lg-12 base-path">
+            {{ data.base_path }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
             {% for tab in data.tabs %}
                 <table class="table table-bordered table-striped">
                     <tr>

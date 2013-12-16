@@ -94,6 +94,9 @@ uploads
 # Django Collected Static Folder
 collected-static
 
+# sass
+.sass-cache
+
 # node.js
 pids
 logs

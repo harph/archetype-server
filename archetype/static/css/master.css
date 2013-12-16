@@ -1,8 +1,27 @@
 * {
-    margin: 0px;
-    padding: 0px;
-}
+  margin: 0px;
+  padding: 0px;
+  color: #3a87ad;
+  font-family: Monaco, sans-serif; }
 
 body {
-    background: #222222;
-}
+  background: #222222; }
+
+.base-path {
+  font-size: 12px;
+  margin: 20px 0px 10px 0px; }
+
+.command-input {
+  margin: 10px 0px; }
+  .command-input ::-webkit-input-placeholder {
+    color: #3a87ad; }
+  .command-input :-moz-placeholder {
+    color: #3a87ad; }
+  .command-input ::-moz-placeholder {
+    color: #3a87ad; }
+  .command-input :-ms-input-placeholder {
+    color: #3a87ad; }
+  .command-input input[type=text] {
+    color: #3a87ad;
+    background: none;
+    border: 1px solid #3a87ad; }

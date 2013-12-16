@@ -29,5 +29,18 @@
                 {% endblock content %}
             </div>
         {% endblock container%}
+        {% block command_bar %}
+            <div class="navbar navbar-fixed-bottom navbar-inverse">
+                <div class="container">
+                    <div class="navbar-collapse collapse">
+                            <div class="command-input">
+                                <form action="">
+                                    <input type="text" placeholder="command" class="form-control"/>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock command_bar%}
     </body>
 </html>

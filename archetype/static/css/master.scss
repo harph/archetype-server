@@ -1,0 +1,40 @@
+@import 'mixins';
+
+$darkest_color: #222222;
+$light_contrast_color: #3A87AD;
+$dark_contrast_color: #2F3C45;
+
+* {
+    margin: 0px;
+    padding: 0px;
+    color: $light_contrast_color;
+    font: {
+        family: Monaco, sans-serif;
+    }
+}
+
+body {
+    background: $darkest_color;
+}
+
+.base-path {
+    font-size: 12px;
+    margin: 20px 0px 10px 0px;
+}
+
+.command-input {
+    margin: 10px 0px;
+    @mixin input-style {
+        color: $light_contrast_color;
+    }
+    @include placeholder {
+        @include input-style;
+    }
+    input[type=text] {
+        @include input-style;
+        background: none;
+        border: 1px solid $light_contrast_color;
+    }
+}
+
+
